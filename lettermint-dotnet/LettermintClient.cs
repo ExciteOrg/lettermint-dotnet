@@ -32,7 +32,7 @@ public class LettermintClient : ILettermintClient
         if (request.To == null || request.To.Count == 0) throw new ArgumentException("At least one recipient is required.");
         if (string.IsNullOrWhiteSpace(request.Subject)) throw new ArgumentException("Subject is required.");
 
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, "/emails")
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, "/send")
         {
             Content = JsonContent.Create(request)
         };
