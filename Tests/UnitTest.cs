@@ -39,6 +39,7 @@ public class UnitTest
             .Html("<h1>Report</h1>")
             .Text("Report content")
             .IdempotencyKey("12345678")
+            .SetAsOutgoing()
             .SendAsync();
 
         // Assert
@@ -53,7 +54,8 @@ public class UnitTest
                 r.Subject == "Quarterly Report" &&
                 r.Html == "<h1>Report</h1>" &&
                 r.Text == "Report content" &&
-                r.IdempotencyKey == "12345678"),
+                r.IdempotencyKey == "12345678" &&
+                r.Route == "outgoing"),
             Arg.Any<CancellationToken>());
     }
     [Test]

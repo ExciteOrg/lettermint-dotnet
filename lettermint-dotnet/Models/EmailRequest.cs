@@ -7,6 +7,7 @@ public class EmailRequest
     public string? Text { get; set; }
     public string? Html { get; set; }
     public string? Tag { get; set; }
+    public string Route { get; set; } = "outgoing";
     public List<string>? Cc { get; set; }
     public List<string>? Bcc { get; set; }
     public string? IdempotencyKey { get; set; }

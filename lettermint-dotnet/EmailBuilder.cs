@@ -109,6 +109,22 @@ public class EmailBuilder
         return this;
     }
     /// <summary>
+    /// Sets the mail route as Outgoing (Transactional)
+    /// </summary>
+    public EmailBuilder SetAsOutgoing()
+    {
+        _request.Route = "outgoing";
+        return this;
+    }
+    /// <summary>
+    /// Sets the mail route as broadcast (Marketing)
+    /// </summary>
+    public EmailBuilder SetAsBroadcast()
+    {
+        _request.Route = "broadcast";
+        return this;
+    }
+    /// <summary>
     /// Send the email
     /// </summary>
     public async Task<EmailResponse> SendAsync(CancellationToken cancellationToken = default)
