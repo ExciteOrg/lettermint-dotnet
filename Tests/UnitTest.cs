@@ -80,4 +80,38 @@ public class UnitTest
 
         return Verify(options);
     }
+
+    [Test]
+    public async Task SendTestEmail()
+    {
+        var services = new ServiceCollection();
+        
+        //services.AddLettermint(options =>
+        //{
+        //    options.ApiKey = "";
+        //});
+        //// Assert
+        //var options = serviceProvider.GetService<IOptions<LettermintOptions>>();
+
+        //var letterMintTest = new LettermintClient(new HttpClient(), options);
+
+
+
+        //// Arrange
+        //var services = new ServiceCollection();
+        //var expectedApiKey = "my-secret-key";
+        //var expectedBaseUrl = "https://custom.api.com";
+
+        // Act
+        services.AddLettermint(options =>
+        {
+            options.ApiKey = "InsertKeyHere";
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        // Assert
+        var client = serviceProvider.GetService<ILettermintClient>();
+
+        await client.Email.To("lars@excite.dk").Subject("Test").Html("<h1>Report</h1>").Tag("Test").From("info@netvaerksportalen.com").SetAsOutgoing().SendAsync();
+    }
 }
