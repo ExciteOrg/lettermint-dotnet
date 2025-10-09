@@ -1,4 +1,4 @@
-﻿namespace lettermint_dotnet;
+﻿namespace Lettermint;
 
 public class LettermintOptions
 {

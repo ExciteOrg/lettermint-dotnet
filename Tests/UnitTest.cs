@@ -1,5 +1,5 @@
-﻿using lettermint_dotnet;
-using lettermint_dotnet.Models;
+﻿using Lettermint;
+using Lettermint.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NSubstitute;
@@ -31,7 +31,7 @@ public class UnitTest
         // Act
         var response = await _builder
             .From("John Doe <john@example.com>")
-            .To("alice@example.com")
+            .To("john", "alice@example.com")
             .Cc("manager@example.com")
             .Bcc("admin@example.com")
             .Tag("login")
@@ -81,22 +81,22 @@ public class UnitTest
         return Verify(options);
     }
 
-    //[Test]
-    //public async Task SendTestEmail()
-    //{
-    //    var services = new ServiceCollection();
+    [Test]
+    public async Task SendTestEmail()
+    {
+        var services = new ServiceCollection();
 
 
-    //    // Act
-    //    services.AddLettermint(options =>
-    //    {
-    //        options.ApiKey = "InsertKeyHere";
-    //    });
+        // Act
+        services.AddLettermint(options =>
+        {
+            options.ApiKey = "lm_T0JYf2TGqV3d2CNQZOLwLf68JQfOuUZC";
+        });
 
-    //    var serviceProvider = services.BuildServiceProvider();
-    //    // Assert
-    //    var client = serviceProvider.GetService<ILettermintClient>();
+        var serviceProvider = services.BuildServiceProvider();
+        // Assert
+        var client = serviceProvider.GetService<ILettermintClient>();
 
-    //    await client.Email.To("lars@excite.dk").Subject("Test").Html("<h1>Report</h1>").Tag("Test").From("info@netvaerksportalen.com").SetAsOutgoing().SendAsync();
-    //}
+        await client.Email.To("lars@excite.dk").Subject("Test").Html("<h1>Report</h1>").IdempotencyKey("123").Tag("Test").From("info@netvaerksportalen.com").SetAsOutgoing().SendAsync();
+    }
 }

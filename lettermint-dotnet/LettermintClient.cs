@@ -1,23 +1,20 @@
-﻿using lettermint_dotnet.Models;
-using Microsoft.Extensions.Options;
+﻿using Lettermint.Models;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace lettermint_dotnet;
+namespace Lettermint;
 
-public class LettermintClient : ILettermintClient
+public class LettermintClient(HttpClient _httpClient) : ILettermintClient
 {
-    private readonly HttpClient _httpClient;
-    private readonly LettermintOptions _options;
+    //private readonly HttpClient _httpClient;
 
     public EmailBuilder Email => new(this);
 
-    public LettermintClient(HttpClient httpClient, IOptions<LettermintOptions> options)
-    {
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
-    }
+    //public LettermintClient(HttpClient httpClient)
+    //{
+    //    _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    //}
 
     public async Task<EmailResponse> SendEmailAsync(EmailRequest request, CancellationToken cancellationToken = default)
     {
@@ -45,8 +42,8 @@ public class LettermintClient : ILettermintClient
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
-            if (!errorContent.Contains("This idempotency key has already been used"))
-                throw new Exception($"Lettermint API error ({response.StatusCode}): {errorContent}");
+            //if (!errorContent.Contains("This idempotency key has already been used")) // I had some emails generate this error but i cant track it again. We have ti find a better way to track the error than string contains
+            throw new Exception($"Lettermint API error ({response.StatusCode}): {errorContent}");
         }
 
         var result = await response.Content.ReadFromJsonAsync<EmailResponse>(cancellationToken);

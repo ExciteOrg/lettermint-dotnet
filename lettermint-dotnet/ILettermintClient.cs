@@ -1,7 +1,7 @@
-﻿using lettermint_dotnet.Models;
+﻿using Lettermint.Models;
 
 
-namespace lettermint_dotnet;
+namespace Lettermint;
 
 public interface ILettermintClient
 {

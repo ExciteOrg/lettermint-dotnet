@@ -36,15 +36,8 @@ builder.Services.AddLettermint(options =>
 Inject `ILettermintClient` into your services or controllers:
 
 ```csharp
-public class EmailService
+public class EmailService(ILettermintClient _lettermint)
 {
-    private readonly ILettermintClient _lettermint;
-
-    public EmailService(ILettermintClient lettermint)
-    {
-        _lettermint = lettermint;
-    }
-
     public async Task SendWelcomeEmail(string recipientEmail, string name)
     {
         var response = await _lettermint.Email
@@ -69,6 +62,7 @@ var response = await _lettermint.Email
     .To("recipient@example.com")
     .Subject("Hello from Lettermint")
     .Text("This is a plain text email.")
+    .SetAsOutgoing()
     .SendAsync();
 ```
 
@@ -80,29 +74,27 @@ var response = await _lettermint.Email
     .To("recipient@example.com")
     .Subject("Newsletter")
     .Html("<h1>Welcome!</h1><p>Thank you for subscribing.</p>")
+    .SetAsOutgoing()
     .SendAsync();
 ```
 
-
-
-## Configuration Options
+### All Email methods
 
 ```csharp
-builder.Services.AddLettermint(options =>
-{
-    // Required: Your Lettermint API key
-    options.ApiKey = "your-api-key";
-    
-    // Optional: Custom API base URL (defaults to https://api.lettermint.com/v1)
-    options.BaseUrl = "https://api.lettermint.com/v1";
-    
-    // Optional: Add custom headers to all requests
-    options.CustomHeaders = new Dictionary<string, string>
-    {
-        { "X-Custom-Header", "value" }
-    };
-});
+var response = await _lettermint.Email
+    .From("sender@example.com")
+    .From("John", "john@john.com")
+    .To("recipient@example.com")
+    .To("John", "john@john.com")
+    .Tag("Login")
+    .Subject("Newsletter")
+    .Html("<h1>Welcome!</h1><p>Thank you for subscribing.</p>")
+    .SetAsOutgoing()
+    .SetAsBroadcast()
+    .IdempotencyKey("12345678")
+    .SendAsync();
 ```
+
 
 ## License
 

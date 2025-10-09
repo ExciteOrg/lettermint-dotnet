@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Net.Http;
-using System.Net.Http.Headers;
 
-namespace lettermint_dotnet;
+namespace Lettermint;
 
 public static class ServiceCollectionExtensions
 {
@@ -13,8 +11,6 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(configureOptions);
 
         services.Configure(configureOptions);
-
-        //services.AddHttpClient<ILettermintClient, LettermintClient>();
 
         services.AddHttpClient<ILettermintClient, LettermintClient>((serviceProvider, client) =>
         {

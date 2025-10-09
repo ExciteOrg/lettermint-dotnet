@@ -1,6 +1,6 @@
-﻿using lettermint_dotnet.Models;
+﻿using Lettermint.Models;
 
-namespace lettermint_dotnet;
+namespace Lettermint;
 public class EmailBuilder
 {
     private readonly EmailRequest _request = new();

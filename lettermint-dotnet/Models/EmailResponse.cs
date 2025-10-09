@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lettermint_dotnet.Models;
+namespace Lettermint.Models;
 public class EmailResponse
 {
     public string MessageId { get; set; } = string.Empty;
