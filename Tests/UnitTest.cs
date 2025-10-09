@@ -81,22 +81,22 @@ public class UnitTest
         return Verify(options);
     }
 
-    [Test]
-    public async Task SendTestEmail()
-    {
-        var services = new ServiceCollection();
+    //[Test]
+    //public async Task SendTestEmail()
+    //{
+    //    var services = new ServiceCollection();
 
 
-        // Act
-        services.AddLettermint(options =>
-        {
-            options.ApiKey = "lm_T0JYf2TGqV3d2CNQZOLwLf68JQfOuUZC";
-        });
+    //    // Act
+    //    services.AddLettermint(options =>
+    //    {
+    //        options.ApiKey = "insertKeyHere";
+    //    });
 
-        var serviceProvider = services.BuildServiceProvider();
-        // Assert
-        var client = serviceProvider.GetService<ILettermintClient>();
+    //    var serviceProvider = services.BuildServiceProvider();
+    //    // Assert
+    //    var client = serviceProvider.GetService<ILettermintClient>();
 
-        await client.Email.To("lars@excite.dk").Subject("Test").Html("<h1>Report</h1>").IdempotencyKey("123").Tag("Test").From("info@netvaerksportalen.com").SetAsOutgoing().SendAsync();
-    }
+    //    await client.Email.To("lars@excite.dk").Subject("Test").Html("<h1>Report</h1>").IdempotencyKey("123").Tag("Test").From("info@netvaerksportalen.com").SetAsOutgoing().SendAsync();
+    //}
 }

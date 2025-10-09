@@ -9,7 +9,7 @@
     
         <!-- NuGet Package Information -->
     <PackageId>LettermintDotNet</PackageId>
-    <Version>0.5.0</Version>
+    <Version>0.6.0</Version>
     <Authors>Lars Remme Bloch</Authors>
     <Company>Excite</Company>
     <Description>A C# SDK for Lettermint email sending service with fluent API support.</Description>
