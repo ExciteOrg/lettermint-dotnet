@@ -31,7 +31,7 @@ public class UnitTest
         // Act
         var response = await _builder
             .From("John Doe <john@example.com>")
-            .To("john", "alice@example.com")
+            .To("alice@example.com")
             .Cc("manager@example.com")
             .Bcc("admin@example.com")
             .Tag("login")
