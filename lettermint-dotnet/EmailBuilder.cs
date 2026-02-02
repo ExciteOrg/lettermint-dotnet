@@ -1,4 +1,5 @@
 ﻿using Lettermint.Models;
+using lettermint_dotnet.Models;
 
 namespace Lettermint;
 public class EmailBuilder
@@ -122,6 +123,14 @@ public class EmailBuilder
     public EmailBuilder SetAsBroadcast()
     {
         _request.Route = "broadcast";
+        return this;
+    }
+    /// <summary>
+    /// Set an attachment. Content_id can be null and is used for inline images
+    /// </summary>
+    public EmailBuilder AddAttachment(string fileName, string content, string? content_id)
+    {
+        _request.Attachments.Add(new Attachment { Filename = fileName, Content = content, Content_id = content_id });
         return this;
     }
     /// <summary>

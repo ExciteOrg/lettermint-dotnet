@@ -29,7 +29,7 @@ public class UnitTest
             .Returns(expectedResponse);
 
         // Act
-        var response = await _builder
+        var request = await _builder
             .From("John Doe <john@example.com>")
             .To("alice@example.com")
             .Cc("manager@example.com")
@@ -38,12 +38,13 @@ public class UnitTest
             .Subject("Quarterly Report")
             .Html("<h1>Report</h1>")
             .Text("Report content")
+            .AddAttachment("filname.ics", "1234564574573453453", null)
             .IdempotencyKey("12345678")
             .SetAsOutgoing()
             .SendAsync();
 
         // Assert
-        await _mockClient.Received(1).SendEmailAsync(
+        var response = await _mockClient.Received(1).SendEmailAsync(
             Arg.Is<EmailRequest>(r =>
                 r.From == "John Doe <john@example.com>" &&
                 r.To.Count == 1 &&
@@ -55,7 +56,11 @@ public class UnitTest
                 r.Html == "<h1>Report</h1>" &&
                 r.Text == "Report content" &&
                 r.IdempotencyKey == "12345678" &&
-                r.Route == "outgoing"),
+                r.Route == "outgoing" &&
+                r.Attachments.Count == 1
+                
+                ),
+            
             Arg.Any<CancellationToken>());
     }
     [Test]

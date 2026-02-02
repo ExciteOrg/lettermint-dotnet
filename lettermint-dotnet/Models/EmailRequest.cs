@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using lettermint_dotnet.Models;
+using System.Text.Json.Serialization;
 
 namespace Lettermint.Models;
 public class EmailRequest
@@ -12,6 +13,7 @@ public class EmailRequest
     public string Route { get; set; } = "outgoing";
     public List<string>? Cc { get; set; }
     public List<string>? Bcc { get; set; }
+    public List<Attachment> Attachments { get; set; } = [];
     [JsonIgnore]
     public string? IdempotencyKey { get; set; }
 }

@@ -7,14 +7,12 @@ namespace Lettermint;
 
 public class LettermintClient(HttpClient _httpClient) : ILettermintClient
 {
-    //private readonly HttpClient _httpClient;
-
     public EmailBuilder Email => new(this);
 
-    //public LettermintClient(HttpClient httpClient)
-    //{
-    //    _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-    //}
+    public async Task<List<EmailResponse>> SendEmailsBatchAsync(List<EmailRequest> requests, CancellationToken cancellationToken)
+    {
+
+    }
 
     public async Task<EmailResponse> SendEmailAsync(EmailRequest request, CancellationToken cancellationToken = default)
     {
