@@ -134,6 +134,14 @@ public class EmailBuilder
         return this;
     }
     /// <summary>
+    /// Builds and returns the email request without sending it.
+    /// Use this when you want to send multiple emails in batch.
+    /// </summary>
+    public EmailRequest Build()
+    {
+        return _request;
+    }
+    /// <summary>
     /// Send the email
     /// </summary>
     public async Task<EmailResponse> SendAsync(CancellationToken cancellationToken = default)
