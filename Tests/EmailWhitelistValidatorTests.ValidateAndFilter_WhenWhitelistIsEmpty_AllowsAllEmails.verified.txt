@@ -1,0 +1,6 @@
+﻿[
+  anyone@anywhere.com,
+  user@example.com,
+  admin@company.com,
+  test+tag@domain.com
+]

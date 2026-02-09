@@ -12,6 +12,9 @@ public static class ServiceCollectionExtensions
 
         services.Configure(configureOptions);
 
+        // Register the email whitelist validator as a singleton (stateless after initialization)
+        services.AddSingleton<IEmailWhitelistValidator, EmailWhitelistValidator>();
+
         services.AddHttpClient<ILettermintClient, LettermintClient>((serviceProvider, client) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<LettermintOptions>>().Value;

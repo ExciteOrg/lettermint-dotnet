@@ -12,13 +12,20 @@ namespace Tests;
 public class UnitTest
 {
     private ILettermintClient _mockClient = null!;
+    private IEmailWhitelistValidator _mockValidator = null!;
     private EmailBuilder _builder = null!;
 
     [Before(Test)]
     public void Setup()
     {
         _mockClient = Substitute.For<ILettermintClient>();
-        _builder = new EmailBuilder(_mockClient);
+        _mockValidator = Substitute.For<IEmailWhitelistValidator>();
+
+        // Configure mock validator to pass through all emails (whitelist disabled)
+        _mockValidator.ValidateAndFilter(Arg.Any<string>()).Returns(x => x[0]);
+        _mockValidator.IsEnabled.Returns(false);
+
+        _builder = new EmailBuilder(_mockClient, _mockValidator);
     }
 
     [Test]
@@ -30,7 +37,7 @@ public class UnitTest
 
         // Act
         var request = await _builder
-            .From("John Doe <john@example.com>")
+            .From("John Doe", "john@example.com")
             .To("alice@example.com")
             .Cc("manager@example.com")
             .Bcc("admin@example.com")
