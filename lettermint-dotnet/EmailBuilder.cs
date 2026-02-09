@@ -110,9 +110,10 @@ public class EmailBuilder
     /// <summary>
     /// Sets a tag of the email
     /// </summary>
-    public EmailBuilder Tag(string tag)
+    public EmailBuilder Tag(string? tag)
     {
-        if (!string.IsNullOrEmpty(tag))
+        if(!string.IsNullOrEmpty(tag))
+
             _request.Tag = tag;
         return this;
     }
