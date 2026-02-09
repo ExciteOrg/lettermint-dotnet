@@ -6,67 +6,105 @@ public class EmailBuilder
 {
     private readonly EmailRequest _request = new();
     private readonly ILettermintClient _client;
+    private readonly IEmailWhitelistValidator _whitelistValidator;
 
-    public EmailBuilder(ILettermintClient client)
+    public EmailBuilder(ILettermintClient client, IEmailWhitelistValidator whitelistValidator)
     {
         _client = client;
+        _whitelistValidator = whitelistValidator;
     }
+
     /// <summary>
-    /// Sets the sender's name and/or email address.
+    /// Sets the sender's email address.
     /// </summary>
-    /// <param name="from">The sender email address. Can also include display name like "John Doe &lt;john@example.com&gt;".</param>
-    public EmailBuilder From(string from)
+    /// <param name="fromEmail">The sender email address (e.g., "john@example.com").</param>
+    public EmailBuilder From(string fromEmail)
     {
-        _request.From = from;
+        _request.From = fromEmail;
         return this;
     }
+
     /// <summary>
     /// Sets the sender's name and email address.
     /// </summary>
-    /// <param name="fromName">The senders name.</param>
-    /// <param name="fromEmail">The senders email.</param>
+    /// <param name="fromName">The sender's name.</param>
+    /// <param name="fromEmail">The sender's email.</param>
     public EmailBuilder From(string fromName, string fromEmail)
     {
         _request.From = $"{fromName} <{fromEmail}>";
         return this;
     }
+
     /// <summary>
-    /// Sets the receivers name and/or email address.
+    /// Adds a recipient email address.
     /// </summary>
-    /// <param name="to">The receivers email address. Can also include display name like "John Doe &lt;john@example.com&gt;".</param>
-    public EmailBuilder To(string to)
+    /// <param name="toEmail">The recipient's email address (e.g., "alice@example.com").</param>
+    public EmailBuilder To(string toEmail)
     {
-        _request.To.Add(to);
+        var validatedEmail = _whitelistValidator.ValidateAndFilter(toEmail);
+        _request.To.Add(validatedEmail);
         return this;
     }
+
     /// <summary>
-    /// Sets the receivers name and email address.
+    /// Adds a recipient with name and email address.
     /// </summary>
-    /// <param name="toName">The senders name.</param>
-    /// <param name="toEmail">The senders email.</param>
+    /// <param name="toName">The recipient's name.</param>
+    /// <param name="toEmail">The recipient's email.</param>
     public EmailBuilder To(string toName, string toEmail)
     {
-        _request.To.Add($"{toName} <{toEmail}>");
+        var validatedEmail = _whitelistValidator.ValidateAndFilter(toEmail);
+        _request.To.Add($"{toName} <{validatedEmail}>");
         return this;
     }
+
     /// <summary>
-    /// Sets the cc receivers name and/or email address.
+    /// Adds a CC recipient email address.
     /// </summary>
-    /// <param name="cc">The receivers email address. Can also include display name like "John Doe &lt;john@example.com&gt;".</param>
-    public EmailBuilder Cc(string cc)
+    /// <param name="ccEmail">The recipient's email address (e.g., "manager@example.com").</param>
+    public EmailBuilder Cc(string ccEmail)
     {
         _request.Cc ??= [];
-        _request.Cc.Add(cc);
+        var validatedEmail = _whitelistValidator.ValidateAndFilter(ccEmail);
+        _request.Cc.Add(validatedEmail);
         return this;
     }
+
     /// <summary>
-    /// Sets the bcc receivers name and/or email address.
+    /// Adds a CC recipient with name and email address.
     /// </summary>
-    /// <param name="bcc">The receivers email address. Can also include display name like "John Doe &lt;john@example.com&gt;".</param>
-    public EmailBuilder Bcc(string bcc)
+    /// <param name="ccName">The recipient's name.</param>
+    /// <param name="ccEmail">The recipient's email.</param>
+    public EmailBuilder Cc(string ccName, string ccEmail)
+    {
+        _request.Cc ??= [];
+        var validatedEmail = _whitelistValidator.ValidateAndFilter(ccEmail);
+        _request.Cc.Add($"{ccName} <{validatedEmail}>");
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a BCC recipient email address.
+    /// </summary>
+    /// <param name="bccEmail">The recipient's email address (e.g., "admin@example.com").</param>
+    public EmailBuilder Bcc(string bccEmail)
     {
         _request.Bcc ??= [];
-        _request.Bcc.Add(bcc);
+        var validatedEmail = _whitelistValidator.ValidateAndFilter(bccEmail);
+        _request.Bcc.Add(validatedEmail);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a BCC recipient with name and email address.
+    /// </summary>
+    /// <param name="bccName">The recipient's name.</param>
+    /// <param name="bccEmail">The recipient's email.</param>
+    public EmailBuilder Bcc(string bccName, string bccEmail)
+    {
+        _request.Bcc ??= [];
+        var validatedEmail = _whitelistValidator.ValidateAndFilter(bccEmail);
+        _request.Bcc.Add($"{bccName} <{validatedEmail}>");
         return this;
     }
     /// <summary>
@@ -75,6 +113,7 @@ public class EmailBuilder
     public EmailBuilder Tag(string? tag)
     {
         if(!string.IsNullOrEmpty(tag))
+
             _request.Tag = tag;
         return this;
     }
@@ -127,11 +166,14 @@ public class EmailBuilder
         return this;
     }
     /// <summary>
-    /// Set an attachment. Content_id can be null and is used for inline images
+    /// Set an attachment. Content is the base64 value of the file. Content_id can be null and is used for inline images
     /// </summary>
     public EmailBuilder AddAttachment(string fileName, string content, string? content_id)
     {
-        _request.Attachments.Add(new Attachment { Filename = fileName, Content = content, Content_id = content_id });
+        if (!string.IsNullOrEmpty(fileName) && !string.IsNullOrEmpty(content))
+        {
+            _request.Attachments.Add(new Attachment { Filename = fileName, Content = content, Content_id = content_id });
+        }
         return this;
     }
     /// <summary>

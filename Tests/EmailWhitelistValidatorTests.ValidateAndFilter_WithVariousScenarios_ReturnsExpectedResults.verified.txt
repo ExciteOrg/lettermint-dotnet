@@ -1,0 +1,68 @@
+﻿[
+  {
+    Input: allowed@example.com,
+    Expected: allowed@example.com,
+    Reason: Exact match should pass,
+    Actual: allowed@example.com
+  },
+  {
+    Input: ALLOWED@EXAMPLE.COM,
+    Expected: ALLOWED@EXAMPLE.COM,
+    Reason: Case insensitive match,
+    Actual: ALLOWED@EXAMPLE.COM
+  },
+  {
+    Input: anyone@company.com,
+    Expected: anyone@company.com,
+    Reason: Domain wildcard should match,
+    Actual: anyone@company.com
+  },
+  {
+    Input: admin@company.com,
+    Expected: admin@company.com,
+    Reason: Domain wildcard should match any user,
+    Actual: admin@company.com
+  },
+  {
+    Input: allowed+tag@example.com,
+    Expected: allowed+tag@example.com,
+    Reason: Plus-addressing should match base email,
+    Actual: allowed+tag@example.com
+  },
+  {
+    Input: user@test.com,
+    Expected: user@test.com,
+    Reason: Base email should match plus-addressed whitelist entry,
+    Actual: user@test.com
+  },
+  {
+    Input: user+anything@test.com,
+    Expected: user+anything@test.com,
+    Reason: Any plus-tag should match base,
+    Actual: user+anything@test.com
+  },
+  {
+    Input: blocked@example.com,
+    Expected: ok@testing.lettermint.co,
+    Reason: Non-whitelisted email should redirect,
+    Actual: ok@testing.lettermint.co
+  },
+  {
+    Input: user@other.com,
+    Expected: ok@testing.lettermint.co,
+    Reason: Different domain should be blocked,
+    Actual: ok@testing.lettermint.co
+  },
+  {
+    Input: ,
+    Expected: ,
+    Reason: Empty string should pass through,
+    Actual: 
+  },
+  {
+    Input:    ,
+    Expected:    ,
+    Reason: Whitespace should pass through,
+    Actual:    
+  }
+]

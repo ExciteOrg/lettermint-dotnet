@@ -1,11 +1,12 @@
 ﻿using Lettermint.Models;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Lettermint;
 
-public class LettermintClient(HttpClient _httpClient) : ILettermintClient
+public class LettermintClient(HttpClient _httpClient, IOptions<LettermintOptions> _options, IEmailWhitelistValidator _validator) : ILettermintClient
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -13,7 +14,7 @@ public class LettermintClient(HttpClient _httpClient) : ILettermintClient
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
-    public EmailBuilder Email => new(this);
+    public EmailBuilder Email => new(this, _validator);
 
     public async Task<List<EmailResponse>> SendEmailsBatchAsync(List<EmailRequest> requests, CancellationToken cancellationToken = default)
     {
@@ -60,11 +61,10 @@ public class LettermintClient(HttpClient _httpClient) : ILettermintClient
         return result ?? throw new InvalidOperationException("Failed to deserialize response.");
     }
 
-    private void Validate (List<EmailRequest> requests)
+    private void Validate(List<EmailRequest> requests)
     {
         ArgumentNullException.ThrowIfNull(requests);
         if (requests.Count == 0) throw new ArgumentException("At least one email request is required.", nameof(requests));
-
         foreach (var request in requests)
         {
             if (string.IsNullOrWhiteSpace(request.From)) throw new ArgumentException("From address is required.");
