@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Lettermint;
@@ -11,14 +10,12 @@ public class EmailWhitelistValidator : IEmailWhitelistValidator
 {
     private readonly HashSet<string> _exactMatches;
     private readonly HashSet<string> _domainWildcards;
-    private readonly ILogger<EmailWhitelistValidator>? _logger;
     private const string TestEmail = "ok@testing.lettermint.co";
 
     public bool IsEnabled => _exactMatches.Count > 0 || _domainWildcards.Count > 0;
 
-    public EmailWhitelistValidator(IOptions<LettermintOptions> options, ILogger<EmailWhitelistValidator>? logger = null)
+    public EmailWhitelistValidator(IOptions<LettermintOptions> options)
     {
-        _logger = logger;
         _exactMatches = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         _domainWildcards = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -78,12 +75,6 @@ public class EmailWhitelistValidator : IEmailWhitelistValidator
         // Check if email is whitelisted
         if (IsWhitelisted(email))
             return emailAddress;
-
-        // Not whitelisted - replace with test email
-        _logger?.LogWarning(
-            "Email address {Email} is not whitelisted. Redirecting to {TestEmail}",
-            email,
-            TestEmail);
 
         return TestEmail;
     }
