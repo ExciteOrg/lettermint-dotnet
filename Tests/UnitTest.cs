@@ -63,7 +63,7 @@ public class UnitTest
                 r.Html == "<h1>Report</h1>" &&
                 r.Text == "Report content" &&
                 r.IdempotencyKey == "12345678" &&
-                r.Route == "outgoing" &&
+                r.Route == "myroute" &&
                 r.Attachments.Count == 1
                 
                 ),
