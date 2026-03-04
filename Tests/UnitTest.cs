@@ -43,11 +43,11 @@ public class UnitTest
             .Bcc("admin@example.com")
             .Tag("login")
             .Subject("Quarterly Report")
-            .Html("<h1>Report</h1>")
-            .Text("Report content")
+            .SetHtmlBody("<h1>Report</h1>")
+            .SetTextBody("Report content")
             .AddAttachment("filname.ics", "1234564574573453453", null)
             .IdempotencyKey("12345678")
-            .SetAsOutgoing()
+            .SetRoute()
             .SendAsync();
 
         // Assert

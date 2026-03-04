@@ -30,6 +30,20 @@ builder.Services.AddLettermint(options =>
 });
 ```
 
+You can add whitelisted emails. This is good for dev og test environment where you want to make sure you dont hurt your domain reputation.
+
+Supported formats:
+Exact email: "user@example.com" (also allows plus adresseing "user+tag@example.com" 
+Domain wildcard: "*@example.com" (allows any email at this domain)
+Leave empty to disable filtering (all emails allowed - use in production)
+
+```csharp
+builder.Services.AddLettermint(options =>
+{
+    options.ApiKey = "your-api-key-here";
+    options.EmailWhitelist = ["email@one.dk", "Email@two.dk"];
+});
+```
 
 ### 2. Inject and Use
 
@@ -61,8 +75,8 @@ var response = await _lettermint.Email
     .From("sender@example.com")
     .To("recipient@example.com")
     .Subject("Hello from Lettermint")
-    .Text("This is a plain text email.")
-    .SetAsOutgoing()
+    .SetTextBody("This is a plain text email.")
+    .SetRouteAsOutgoing()
     .SendAsync();
 ```
 
@@ -73,8 +87,8 @@ var response = await _lettermint.Email
     .From("sender@example.com")
     .To("recipient@example.com")
     .Subject("Newsletter")
-    .Html("<h1>Welcome!</h1><p>Thank you for subscribing.</p>")
-    .SetAsOutgoing()
+    .SetHtmlBody("<h1>Welcome!</h1><p>Thank you for subscribing.</p>")
+    .SetRouteAsOutgoing()
     .SendAsync();
 ```
 
@@ -88,9 +102,11 @@ var response = await _lettermint.Email
     .To("John", "john@john.com")
     .Tag("Login")
     .Subject("Newsletter")
-    .Html("<h1>Welcome!</h1><p>Thank you for subscribing.</p>")
-    .SetAsOutgoing()
-    .SetAsBroadcast()
+    .SetTextBody("This is a plain text email.")
+    .SetHtmlBody("<h1>Welcome!</h1><p>Thank you for subscribing.</p>")
+    .SetRouteAsOutgoing()
+    .SetRouteAsBroadcast()
+    .SetRoute("specificroute")
     .IdempotencyKey("12345678")
     .SendAsync();
 ```
