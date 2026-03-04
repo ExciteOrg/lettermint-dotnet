@@ -47,7 +47,7 @@ public class UnitTest
             .SetTextBody("Report content")
             .AddAttachment("filname.ics", "1234564574573453453", null)
             .IdempotencyKey("12345678")
-            .SetRoute()
+            .SetRoute("myroute")
             .SendAsync();
 
         // Assert
