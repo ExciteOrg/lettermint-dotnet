@@ -136,7 +136,7 @@ public class EmailBuilder
     /// <summary>
     /// Sets the text of the email. Only one of html and text can be set
     /// </summary>
-    public EmailBuilder Text(string text)
+    public EmailBuilder SetTextBody(string text)
     {
         _request.Text = text;
         return this;
@@ -144,7 +144,7 @@ public class EmailBuilder
     /// <summary>
     /// Sets the html of the email. Only one of html and text can be set
     /// </summary>
-    public EmailBuilder Html(string html)
+    public EmailBuilder SetHtmlBody(string html)
     {
         _request.Html = html;
         return this;
@@ -152,7 +152,7 @@ public class EmailBuilder
     /// <summary>
     /// Sets the mail route as Outgoing (Transactional)
     /// </summary>
-    public EmailBuilder SetAsOutgoing()
+    public EmailBuilder SetRouteAsOutgoing()
     {
         _request.Route = "outgoing";
         return this;
@@ -160,9 +160,17 @@ public class EmailBuilder
     /// <summary>
     /// Sets the mail route as broadcast (Marketing)
     /// </summary>
-    public EmailBuilder SetAsBroadcast()
+    public EmailBuilder SetRouteAsBroadcast()
     {
         _request.Route = "broadcast";
+        return this;
+    }
+    /// <summary>
+    /// Sets the mail route
+    /// </summary>
+    public EmailBuilder SetRoute(string routeName)
+    {
+        _request.Route = routeName;
         return this;
     }
     /// <summary>
