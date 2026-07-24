@@ -1,6 +1,7 @@
 ﻿{
   Value: {
     ApiKey: my-secret-key,
+    TeamApiKey: ,
     BaseUrl: https://custom.api.com
   }
 }
