@@ -16,7 +16,11 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        # SDK 10 (default) fixes the dotnet test/VSTest dispatch; the 9.0 runtime is
+        # required to run the net9.0 test app (no major-version roll-forward by default).
+        dotnet-version: |
+          9.0.x
+          10.0.x
     
     - name: Restore dependencies
       run: dotnet restore
@@ -25,7 +29,9 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     
     - name: Run tests
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      # TUnit uses Microsoft.Testing.Platform, so run the test app directly instead of
+      # `dotnet test` (which defaults to the unsupported VSTest target on the .NET 10 SDK).
+      run: dotnet run --project Tests/Tests.csproj --configuration Release --no-build
     
     - name: Pack
       run: dotnet pack lettermint-dotnet/lettermint-dotnet.csproj --configuration Release --no-build --output ./nupkg
