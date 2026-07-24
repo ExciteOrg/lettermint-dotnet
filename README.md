@@ -1,6 +1,14 @@
-﻿# Lettermint C# SDK
+# Lettermint C# SDK
 
-A simple and elegant C# SDK for sending emails via Lettermint with a fluent API.
+A simple and elegant C# SDK for Lettermint with a fluent API.
+It covers two separate Lettermint APIs:
+
+- **Sending API** (`ILettermintClient`) — send transactional and marketing emails.
+- **Team API** (`ITeamClient`) — manage domains, DNS records and projects.
+
+The two APIs use **separate API keys**, so you can configure one or both. Only the
+clients whose key you provide are registered.
+
 Feel free to open an issue or a pull request to add more features.
 
 ## Installation
@@ -21,33 +29,45 @@ Install-Package Lettermint
 
 ### 1. Configure the Service
 
-Add Lettermint to your service collection:
+Add Lettermint to your service collection. Provide the key(s) for the API(s) you use:
 
 ```csharp
 builder.Services.AddLettermint(options =>
 {
-    options.ApiKey = "your-api-key-here";
+    options.ApiKey = "your-sending-api-key";   // enables ILettermintClient
+    options.TeamApiKey = "your-team-api-key";  // enables ITeamClient
 });
 ```
 
-You can add whitelisted emails. This is good for dev og test environment where you want to make sure you dont hurt your domain reputation.
+- Set **only `ApiKey`** → only the sending client (`ILettermintClient`) is registered.
+- Set **only `TeamApiKey`** → only the team client (`ITeamClient`) is registered.
+- Set **both** → both clients are registered.
+- Set **neither** → registration throws, so misconfiguration fails fast at startup.
+
+> The two keys authenticate differently under the hood: the sending API uses an
+> `x-lettermint-token` header, while the team API uses a `Bearer` token in the
+> `Authorization` header. The SDK handles this for you.
+
+#### Email whitelist (sending API)
+
+You can add whitelisted emails. This is good for dev and test environments where you want to make sure you don't hurt your domain reputation.
 
 Supported formats:
-Exact email: "user@example.com" (also allows plus adresseing "user+tag@example.com" 
-Domain wildcard: "*@example.com" (allows any email at this domain)
-Leave empty to disable filtering (all emails allowed - use in production)
+- Exact email: `"user@example.com"` (also allows plus addressing `"user+tag@example.com"`)
+- Domain wildcard: `"*@example.com"` (allows any email at this domain)
+- Leave empty to disable filtering (all emails allowed - use in production)
 
 ```csharp
 builder.Services.AddLettermint(options =>
 {
-    options.ApiKey = "your-api-key-here";
+    options.ApiKey = "your-sending-api-key";
     options.EmailWhitelist = ["email@one.dk", "Email@two.dk"];
 });
 ```
 
 ### 2. Inject and Use
 
-Inject `ILettermintClient` into your services or controllers:
+Inject `ILettermintClient` (sending) and/or `ITeamClient` (team) into your services or controllers:
 
 ```csharp
 public class EmailService(ILettermintClient _lettermint)
@@ -66,7 +86,7 @@ public class EmailService(ILettermintClient _lettermint)
 }
 ```
 
-## Usage Examples
+## Sending API
 
 ### Simple Text Email
 
@@ -111,6 +131,64 @@ var response = await _lettermint.Email
     .SendAsync();
 ```
 
+## Team API
+
+Inject `ITeamClient` to manage domains, DNS records and projects. All methods accept an
+optional `CancellationToken`, and throw on a non-success response with the API's error body.
+
+```csharp
+public class DomainService(ITeamClient _team)
+{
+    public async Task Example()
+    {
+        // List domains (paginated), optionally filtered by status or domain name
+        var page = await _team.ListDomains(
+            filterStatus: LettermintDomainStatus.Verified,
+            pageSize: 30);
+
+        foreach (var domain in page!.Data)
+            Console.WriteLine($"{domain.Domain} ({domain.Id})");
+
+        // Get a single domain, including its DNS records
+        var details = await _team.GetDomainDetails("domain-id");
+
+        // Create a new domain
+        var created = await _team.CreateDomain("example.com");
+
+        // Trigger verification of all DNS records for a domain
+        var message = await _team.VerifyAllDnsRecords("domain-id");
+
+        // Assign projects to a domain
+        var updated = await _team.UpdateProjects("domain-id", ["project-id-1", "project-id-2"]);
+
+        // Delete a domain
+        await _team.DeleteDomain("domain-id");
+    }
+}
+```
+
+### Domain status
+
+`LettermintDomainStatus` is a strongly-typed enum used for the `ListDomains` status filter
+and mapped to the API's wire values automatically:
+
+| Enum value | Wire value |
+| --- | --- |
+| `LettermintDomainStatus.Verified` | `verified` |
+| `LettermintDomainStatus.PartiallyVerified` | `partially_verified` |
+| `LettermintDomainStatus.PendingVerification` | `pending_verification` |
+| `LettermintDomainStatus.FailedVerification` | `failed_verification` |
+
+### Team API methods
+
+| Method | HTTP | Description |
+| --- | --- | --- |
+| `ListDomains(filterStatus?, filterDomain?, pageSize, cursor?, ct)` | `GET /domains` | List domains with optional status/domain filters and cursor pagination. |
+| `GetDomainDetails(domainId, ct)` | `GET /domains/{id}?include=dnsRecords` | Get a single domain including its DNS records. |
+| `CreateDomain(domain, ct)` | `POST /domains` | Create a new domain. |
+| `DeleteDomain(domainId, ct)` | `DELETE /domains/{id}` | Delete a domain. Throws on failure. |
+| `VerifyAllDnsRecords(domainId, ct)` | `POST /domains/{id}/dns-records/verify` | Trigger verification of all DNS records; returns the API message. |
+| `UpdateProjects(domainId, projectIds, ct)` | `PUT /domains/{id}/projects` | Assign the given project ids to a domain. |
 
 ## License
 

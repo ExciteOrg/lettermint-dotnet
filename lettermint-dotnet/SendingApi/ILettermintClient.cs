@@ -1,7 +1,7 @@
-﻿using Lettermint.Models;
+﻿using lettermint_dotnet.SendingApi.Models;
 
 
-namespace Lettermint;
+namespace lettermint_dotnet.SendingApi;
 
 public interface ILettermintClient
 {

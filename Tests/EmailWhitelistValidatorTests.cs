@@ -1,6 +1,6 @@
 using Lettermint;
+using lettermint_dotnet.SendingApi;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 
 namespace Tests;
 
