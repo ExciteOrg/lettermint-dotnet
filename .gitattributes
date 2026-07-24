@@ -1,0 +1,5 @@
+# Verify snapshot files must use LF line endings, otherwise the tests fail on Windows.
+*.verified.txt text eol=lf working-tree-encoding=UTF-8
+*.received.txt text eol=lf working-tree-encoding=UTF-8
+*.verified.json text eol=lf working-tree-encoding=UTF-8
+*.received.json text eol=lf working-tree-encoding=UTF-8
