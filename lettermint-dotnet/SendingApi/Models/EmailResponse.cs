@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Lettermint.Models;
+namespace lettermint_dotnet.SendingApi.Models;
 public class EmailResponse
 {
     [JsonPropertyName("message_id")]

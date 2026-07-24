@@ -1,6 +1,7 @@
+using Lettermint;
 using Microsoft.Extensions.Options;
 
-namespace Lettermint;
+namespace lettermint_dotnet.SendingApi;
 
 /// <summary>
 /// Validates email addresses against a whitelist configuration.

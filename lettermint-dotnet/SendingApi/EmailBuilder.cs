@@ -1,7 +1,6 @@
-﻿using Lettermint.Models;
-using lettermint_dotnet.Models;
+﻿using lettermint_dotnet.SendingApi.Models;
 
-namespace Lettermint;
+namespace lettermint_dotnet.SendingApi;
 public class EmailBuilder
 {
     private readonly EmailRequest _request = new();

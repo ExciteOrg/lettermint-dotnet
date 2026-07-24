@@ -1,4 +1,4 @@
-﻿namespace lettermint_dotnet.Models;
+﻿namespace lettermint_dotnet.SendingApi.Models;
 
 public class Attachment
 {

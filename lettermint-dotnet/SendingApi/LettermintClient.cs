@@ -1,10 +1,11 @@
-﻿using Lettermint.Models;
+﻿using Lettermint;
+using lettermint_dotnet.SendingApi.Models;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Lettermint;
+namespace lettermint_dotnet.SendingApi;
 
 public class LettermintClient(HttpClient _httpClient, IOptions<LettermintOptions> _options, IEmailWhitelistValidator _validator) : ILettermintClient
 {

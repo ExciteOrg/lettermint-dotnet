@@ -1,4 +1,4 @@
-namespace Lettermint;
+namespace lettermint_dotnet.SendingApi;
 
 /// <summary>
 /// Validates and filters email addresses based on a configured whitelist.

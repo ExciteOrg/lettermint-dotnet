@@ -1,5 +1,6 @@
 ﻿using Lettermint;
-using Lettermint.Models;
+using lettermint_dotnet.SendingApi;
+using lettermint_dotnet.SendingApi.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NSubstitute;

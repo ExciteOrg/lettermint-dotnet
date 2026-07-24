@@ -1,7 +1,6 @@
-﻿using lettermint_dotnet.Models;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace Lettermint.Models;
+namespace lettermint_dotnet.SendingApi.Models;
 public class EmailRequest
 {
     public string From { get; set; } = string.Empty;
