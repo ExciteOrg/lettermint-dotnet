@@ -3,8 +3,8 @@
 A simple and elegant C# SDK for Lettermint with a fluent API.
 It covers two separate Lettermint APIs:
 
-- **Sending API** (`ILettermintClient`) — send transactional and marketing emails.
-- **Team API** (`ITeamClient`) — manage domains, DNS records and projects.
+- **Sending API** (`ILettermintSendingClient`) — send transactional and marketing emails.
+- **Team API** (`ILettermintTeamClient`) — manage domains, DNS records and projects.
 
 The two APIs use **separate API keys**, so you can configure one or both. Only the
 clients whose key you provide are registered.
@@ -34,13 +34,13 @@ Add Lettermint to your service collection. Provide the key(s) for the API(s) you
 ```csharp
 builder.Services.AddLettermint(options =>
 {
-    options.ApiKey = "your-sending-api-key";   // enables ILettermintClient
-    options.TeamApiKey = "your-team-api-key";  // enables ITeamClient
+    options.ApiKey = "your-sending-api-key";   // enables ILettermintSendingClient
+    options.TeamApiKey = "your-team-api-key";  // enables ILettermintTeamClient
 });
 ```
 
-- Set **only `ApiKey`** → only the sending client (`ILettermintClient`) is registered.
-- Set **only `TeamApiKey`** → only the team client (`ITeamClient`) is registered.
+- Set **only `ApiKey`** → only the sending client (`ILettermintSendingClient`) is registered.
+- Set **only `TeamApiKey`** → only the team client (`ILettermintTeamClient`) is registered.
 - Set **both** → both clients are registered.
 - Set **neither** → registration throws, so misconfiguration fails fast at startup.
 
@@ -67,10 +67,10 @@ builder.Services.AddLettermint(options =>
 
 ### 2. Inject and Use
 
-Inject `ILettermintClient` (sending) and/or `ITeamClient` (team) into your services or controllers:
+Inject `ILettermintSendingClient` (sending) and/or `ILettermintTeamClient` (team) into your services or controllers:
 
 ```csharp
-public class EmailService(ILettermintClient _lettermint)
+public class EmailService(ILettermintSendingClient _lettermint)
 {
     public async Task SendWelcomeEmail(string recipientEmail, string name)
     {
@@ -133,11 +133,12 @@ var response = await _lettermint.Email
 
 ## Team API
 
-Inject `ITeamClient` to manage domains, DNS records and projects. All methods accept an
-optional `CancellationToken`, and throw on a non-success response with the API's error body.
+Inject `ILettermintTeamClient` to manage domains, DNS records and projects. All methods accept an
+optional `CancellationToken`, and throw on a non-success response with the API's error body —
+except `VerifyAllDnsRecords`, which reports failure through its return value.
 
 ```csharp
-public class DomainService(ITeamClient _team)
+public class DomainService(ILettermintTeamClient _team)
 {
     public async Task Example()
     {
@@ -156,7 +157,8 @@ public class DomainService(ITeamClient _team)
         var created = await _team.CreateDomain("example.com");
 
         // Trigger verification of all DNS records for a domain
-        var message = await _team.VerifyAllDnsRecords("domain-id");
+        var verification = await _team.VerifyAllDnsRecords("domain-id");
+        Console.WriteLine($"{verification.Verified}: {verification.Message}");
 
         // Assign projects to a domain
         var updated = await _team.UpdateProjects("domain-id", ["project-id-1", "project-id-2"]);
@@ -187,7 +189,7 @@ and mapped to the API's wire values automatically:
 | `GetDomainDetails(domainId, ct)` | `GET /domains/{id}?include=dnsRecords` | Get a single domain including its DNS records. |
 | `CreateDomain(domain, ct)` | `POST /domains` | Create a new domain. |
 | `DeleteDomain(domainId, ct)` | `DELETE /domains/{id}` | Delete a domain. Throws on failure. |
-| `VerifyAllDnsRecords(domainId, ct)` | `POST /domains/{id}/dns-records/verify` | Trigger verification of all DNS records; returns the API message. |
+| `VerifyAllDnsRecords(domainId, ct)` | `POST /domains/{id}/dns-records/verify` | Trigger verification of all DNS records; returns a `LettermintVerifyAllDnsRecordsResult` with `Verified` and `Message` instead of throwing on failure. |
 | `UpdateProjects(domainId, projectIds, ct)` | `PUT /domains/{id}/projects` | Assign the given project ids to a domain. |
 
 ## License

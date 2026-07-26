@@ -4,10 +4,10 @@ namespace lettermint_dotnet.SendingApi;
 public class EmailBuilder
 {
     private readonly EmailRequest _request = new();
-    private readonly ILettermintClient _client;
+    private readonly ILettermintSendingClient _client;
     private readonly IEmailWhitelistValidator _whitelistValidator;
 
-    public EmailBuilder(ILettermintClient client, IEmailWhitelistValidator whitelistValidator)
+    public EmailBuilder(ILettermintSendingClient client, IEmailWhitelistValidator whitelistValidator)
     {
         _client = client;
         _whitelistValidator = whitelistValidator;

@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace lettermint_dotnet.TeamApi;
 
-public class TeamClient(HttpClient _httpClient) : ITeamClient
+public class LettermintTeamClient(HttpClient _httpClient) : ILettermintTeamClient
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -77,18 +77,18 @@ public class TeamClient(HttpClient _httpClient) : ITeamClient
     }
 
     // POST /domains/{domainId}/dns-records/verify
-    public async Task<string?> VerifyAllDnsRecords(string domainId, CancellationToken cancellationToken = default)
+    public async Task<LettermintVerifyAllDnsRecordsResult> VerifyAllDnsRecords(string domainId, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.PostAsync($"domains/{domainId}/dns-records/verify", null, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            throw new Exception($"Lettermint API error ({response.StatusCode}): {errorContent}");
+            return new LettermintVerifyAllDnsRecordsResult { Verified = false, Message = errorContent } ;
         }
 
         var result = await response.Content.ReadFromJsonAsync<LettermintMessageResponse>(JsonOptions, cancellationToken);
-        return result?.Message;
+        return new LettermintVerifyAllDnsRecordsResult { Verified = false, Message = result?.Message ?? "" };
     }
 
     // PUT /domains/{domainId}/projects

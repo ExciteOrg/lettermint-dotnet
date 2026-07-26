@@ -12,14 +12,14 @@ namespace Tests;
 /// </summary>
 public class UnitTest
 {
-    private ILettermintClient _mockClient = null!;
+    private ILettermintSendingClient _mockClient = null!;
     private IEmailWhitelistValidator _mockValidator = null!;
     private EmailBuilder _builder = null!;
 
     [Before(Test)]
     public void Setup()
     {
-        _mockClient = Substitute.For<ILettermintClient>();
+        _mockClient = Substitute.For<ILettermintSendingClient>();
         _mockValidator = Substitute.For<IEmailWhitelistValidator>();
 
         // Configure mock validator to pass through all emails (whitelist disabled)
@@ -108,7 +108,7 @@ public class UnitTest
 
     //    var serviceProvider = services.BuildServiceProvider();
     //    // Assert
-    //    var client = serviceProvider.GetService<ILettermintClient>();
+    //    var client = serviceProvider.GetService<ILettermintSendingClient>();
 
     //    await client.Email.To("lars@excite.dk").Subject("Test").Html("<h1>Report</h1>").IdempotencyKey("123").Tag("Test").From("info@netvaerksportalen.com").SetAsOutgoing().SendAsync();
     //}
