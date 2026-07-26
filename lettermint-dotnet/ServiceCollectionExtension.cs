@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
             // Register the email whitelist validator as a singleton (stateless after initialization)
             services.AddSingleton<IEmailWhitelistValidator, EmailWhitelistValidator>();
 
-            services.AddHttpClient<ILettermintClient, LettermintClient>((serviceProvider, client) =>
+            services.AddHttpClient<ILettermintSendingClient, LettermintSendingClient>((serviceProvider, client) =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<LettermintOptions>>().Value;
 
@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
         // Team API — uses a separate key, only registered when that key is configured.
         if (!string.IsNullOrWhiteSpace(options.TeamApiKey))
         {
-            services.AddHttpClient<ITeamClient, TeamClient>((serviceProvider, client) =>
+            services.AddHttpClient<ILettermintTeamClient, LettermintTeamClient>((serviceProvider, client) =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<LettermintOptions>>().Value;
 

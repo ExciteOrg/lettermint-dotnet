@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace lettermint_dotnet.SendingApi;
 
-public class LettermintClient(HttpClient _httpClient, IOptions<LettermintOptions> _options, IEmailWhitelistValidator _validator) : ILettermintClient
+public class LettermintSendingClient(HttpClient _httpClient, IOptions<LettermintOptions> _options, IEmailWhitelistValidator _validator) : ILettermintSendingClient
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {

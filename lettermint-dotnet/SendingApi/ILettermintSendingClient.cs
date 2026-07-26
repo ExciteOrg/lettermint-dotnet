@@ -3,7 +3,7 @@
 
 namespace lettermint_dotnet.SendingApi;
 
-public interface ILettermintClient
+public interface ILettermintSendingClient
 {
     EmailBuilder Email { get; }
     Task<EmailResponse> SendEmailAsync(EmailRequest request, CancellationToken cancellationToken = default);
