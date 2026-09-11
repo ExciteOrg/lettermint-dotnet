@@ -88,7 +88,7 @@ public class LettermintTeamClient(HttpClient _httpClient) : ILettermintTeamClien
         }
 
         var result = await response.Content.ReadFromJsonAsync<LettermintMessageResponse>(JsonOptions, cancellationToken);
-        return new LettermintVerifyAllDnsRecordsResult { Verified = false, Message = result?.Message ?? "" };
+        return new LettermintVerifyAllDnsRecordsResult { Verified = true, Message = result?.Message ?? "" };
     }
 
     // PUT /domains/{domainId}/projects
