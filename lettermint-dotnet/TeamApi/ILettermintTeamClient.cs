@@ -17,4 +17,20 @@ public interface ILettermintTeamClient
     Task DeleteDomain(string domainId, CancellationToken cancellationToken = default);
     Task<LettermintVerifyAllDnsRecordsResult> VerifyAllDnsRecords(string domainId, CancellationToken cancellationToken = default);
     Task<LettermintDomain?> UpdateProjects(string domainId, IEnumerable<string> projectIds, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the HTML body of a message.
+    /// </summary>
+    /// <param name="messageId">The id of the message.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <returns>The HTML body, or <c>null</c> when the message has no HTML part.</returns>
+    Task<string?> GetMessageHtml(string messageId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the plain text body of a message.
+    /// </summary>
+    /// <param name="messageId">The id of the message.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <returns>The plain text body, or <c>null</c> when the message has no text part.</returns>
+    Task<string?> GetMessageText(string messageId, CancellationToken cancellationToken = default);
 }

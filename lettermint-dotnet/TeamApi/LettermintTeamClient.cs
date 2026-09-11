@@ -105,4 +105,27 @@ public class LettermintTeamClient(HttpClient _httpClient) : ILettermintTeamClien
         var result = await response.Content.ReadFromJsonAsync<LettermintDomain>(JsonOptions, cancellationToken);
         return result ?? throw new InvalidOperationException("Failed to deserialize response.");
     }
+
+    // GET /messages/{messageId}/html
+    public Task<string?> GetMessageHtml(string messageId, CancellationToken cancellationToken = default)
+        => GetMessageBody($"messages/{messageId}/html", cancellationToken);
+
+    // GET /messages/{messageId}/text
+    public Task<string?> GetMessageText(string messageId, CancellationToken cancellationToken = default)
+        => GetMessageBody($"messages/{messageId}/text", cancellationToken);
+
+    // Both message body endpoints return the raw body (text/html or text/plain), not JSON.
+    private async Task<string?> GetMessageBody(string requestUri, CancellationToken cancellationToken)
+    {
+        var response = await _httpClient.GetAsync(requestUri, cancellationToken);
+
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Lettermint API error ({response.StatusCode}): {content}");
+        }
+
+        return string.IsNullOrEmpty(content) ? null : content;
+    }
 }
