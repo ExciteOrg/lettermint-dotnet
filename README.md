@@ -78,7 +78,7 @@ public class EmailService(ILettermintSendingClient _lettermint)
             .From("noreply@yourdomain.com")
             .To(recipientEmail)
             .Subject("Welcome!")
-            .Text($"Hello {name}, welcome to our service!")
+            .SetTextBody($"Hello {name}, welcome to our service!")
             .SendAsync();
 
         Console.WriteLine($"Email sent! Message ID: {response.MessageId}");
@@ -198,4 +198,4 @@ MIT
 
 ## Support
 
-For issues and questions, please visit [GitHub Issues](https://github.com/yourusername/lettermint-csharp/issues).
+For issues and questions, please visit [GitHub Issues](https://github.com/ExciteOrg/lettermint-dotnet/issues).

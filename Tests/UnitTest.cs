@@ -110,6 +110,6 @@ public class UnitTest
     //    // Assert
     //    var client = serviceProvider.GetService<ILettermintSendingClient>();
 
-    //    await client.Email.To("lars@excite.dk").Subject("Test").Html("<h1>Report</h1>").IdempotencyKey("123").Tag("Test").From("info@netvaerksportalen.com").SetAsOutgoing().SendAsync();
+    //    await client.Email.To("lars@excite.dk").Subject("Test").SetHtmlBody("<h1>Report</h1>").IdempotencyKey("123").Tag("Test").From("info@netvaerksportalen.com").SetRouteAsOutgoing().SendAsync();
     //}
 }
