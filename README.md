@@ -133,7 +133,8 @@ var response = await _lettermint.Email
 
 ## Team API
 
-Inject `ILettermintTeamClient` to manage domains, DNS records and projects. All methods accept an
+Inject `ILettermintTeamClient` to manage domains, DNS records and projects, and to read message
+bodies. All methods accept an
 optional `CancellationToken`, and throw on a non-success response with the API's error body —
 except `VerifyAllDnsRecords`, which reports failure through its return value.
 
@@ -165,6 +166,10 @@ public class DomainService(ILettermintTeamClient _team)
 
         // Delete a domain
         await _team.DeleteDomain("domain-id");
+
+        // Read the body of a sent message (null when that part is absent)
+        string? html = await _team.GetMessageHtml("message-id");
+        string? text = await _team.GetMessageText("message-id");
     }
 }
 ```
@@ -191,6 +196,8 @@ and mapped to the API's wire values automatically:
 | `DeleteDomain(domainId, ct)` | `DELETE /domains/{id}` | Delete a domain. Throws on failure. |
 | `VerifyAllDnsRecords(domainId, ct)` | `POST /domains/{id}/dns-records/verify` | Trigger verification of all DNS records; returns a `LettermintVerifyAllDnsRecordsResult` with `Verified` and `Message` instead of throwing on failure. |
 | `UpdateProjects(domainId, projectIds, ct)` | `PUT /domains/{id}/projects` | Assign the given project ids to a domain. |
+| `GetMessageHtml(messageId, ct)` | `GET /messages/{id}/html` | Get the HTML body of a message as a raw string; `null` when the message has no HTML part. |
+| `GetMessageText(messageId, ct)` | `GET /messages/{id}/text` | Get the plain text body of a message as a raw string; `null` when the message has no text part. |
 
 ## License
 
